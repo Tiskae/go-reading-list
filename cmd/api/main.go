@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 const VERSION = "1.0.0"
@@ -27,18 +28,22 @@ func main() {
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
-	app := &application{
+	app := application{
 		config: cfg,
 		logger: logger,
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/v1/healthcheck", app.healthCheck)
-
 	addr := fmt.Sprintf(":%d", cfg.port)
 
-	err := http.ListenAndServe(addr, mux)
-	if err != nil {
-		fmt.Println(err)
+	srv := http.Server{
+		Addr:         addr,
+		Handler:      app.Route(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
+	logger.Printf("Server listening on port %d", app.config.port)
+
+	err := srv.ListenAndServe()
+	logger.Fatal(err)
 }
