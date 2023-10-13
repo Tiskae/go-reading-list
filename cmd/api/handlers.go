@@ -186,6 +186,11 @@ func (app *application) updateBook(w http.ResponseWriter, r *http.Request) {
 	if len(input.Genres) > 0 {
 		book.Genres = input.Genres
 	}
+
+	if err := app.writeJSON(w, http.StatusOK, envelope{"book": book}); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (app *application) deleteBook(w http.ResponseWriter, r *http.Request) {
