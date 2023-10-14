@@ -124,8 +124,9 @@ func (app *application) getBook(w http.ResponseWriter, r *http.Request) {
 
 	book, err := app.models.Books.Get(idInt)
 	if err != nil {
+		app.logger.Println(err.Error())
 		switch {
-		case errors.Is(err, errors.New("record not found")):
+		case err.Error() == "record not found":
 			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		default:
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

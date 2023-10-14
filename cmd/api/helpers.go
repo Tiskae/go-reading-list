@@ -38,6 +38,7 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any
 	dec.DisallowUnknownFields()
 
 	if err := dec.Decode((dst)); err != nil {
+		app.logger.Println("Error from decoding")
 		return err
 	}
 
