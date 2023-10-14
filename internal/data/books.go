@@ -28,7 +28,7 @@ func (b BookModel) Insert(book *Book) error {
 		INSERT INTO books (title, published, pages, genres, rating)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at, version`
-	args := []interface{}{book.Title, book.Published, book.Pages, book.Genres, book.Rating}
+	args := []interface{}{book.Title, book.Published, book.Pages, pq.Array(book.Genres), book.Rating}
 	// return the auto generated system values to GO object
 	return b.DB.QueryRow(query, args...).Scan(&book.ID, &book.CreatedAt, &book.Version)
 }
@@ -48,7 +48,6 @@ func (b BookModel) Get(id int64) (*Book, error) {
 	err := b.DB.QueryRow(query, id).Scan(
 		&book.ID,
 		&book.CreatedAt,
-		&book.Title,
 		&book.Title,
 		&book.Published,
 		&book.Pages,
@@ -127,7 +126,6 @@ func (b BookModel) GetAll() ([]*Book, error) {
 		err := rows.Scan(
 			&book.ID,
 			&book.CreatedAt,
-			&book.Title,
 			&book.Title,
 			&book.Published,
 			&book.Pages,
