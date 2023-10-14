@@ -9,7 +9,7 @@ import (
 
 type envelope map[string]any
 
-func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope) error {
+func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	js, err := json.MarshalIndent(data, "", "\t")
 
 	if err != nil {
@@ -19,6 +19,11 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	js = append(js, '\n')
 
 	w.Header().Set("Content-Type", "application/json")
+
+	for key, value := range headers {
+		w.Header()[key] = value
+	}
+
 	w.WriteHeader(status)
 	w.Write(js)
 
