@@ -10,6 +10,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/tiskae/go-reading-list/internal/data"
 )
 
 const VERSION = "1.0.0"
@@ -23,6 +24,7 @@ type config struct {
 type application struct {
 	config config
 	logger *log.Logger
+	models data.Models
 }
 
 func main() {
@@ -49,6 +51,8 @@ func main() {
 	if errPing != nil {
 		logger.Fatal(errPing)
 	}
+
+	app.models = data.NewModels(db)
 
 	logger.Printf("database connection pool was established")
 
