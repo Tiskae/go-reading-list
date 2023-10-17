@@ -31,7 +31,7 @@ func main() {
 	var cfg config
 	flag.IntVar(&cfg.port, "port", 8081, "API server port")
 	flag.StringVar(&cfg.env, "env", "dev", "Environment (dev|stage|prod)")
-	flag.StringVar(&cfg.dsn, "db-sdn", os.Getenv("READING_LIST_DB_DSN"), "POSTGRESQL DSN")
+	flag.StringVar(&cfg.dsn, "db-sdn", os.Getenv("READINGLIST_DB_DSN"), "POSTGRESQL DSN")
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
@@ -44,6 +44,7 @@ func main() {
 	if errOpenDB != nil {
 		logger.Fatal(errOpenDB)
 	}
+	// postgresql://postgres:62135665@localhost/readinglist?sslmode=disable
 
 	defer db.Close()
 
